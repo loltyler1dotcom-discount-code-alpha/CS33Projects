@@ -1,0 +1,39 @@
+Name: Daniel Yang
+UID: 205772799
+(Problem 2.71)
+A. When word is a negative value, the bits get shifted however the bitwise and operation changes all of
+the bits other than the last 8 into 0's, removing the sign of the number. For example, after the shift
+lets say we get:
+word = 11111111 11111111 11111111 00101001;
+The "& 0xFF" operation would change this to 00101001 and remove all of the preceding 1's, which is correct
+in this case because the byte is positive however if the byte were negative, this would yield an incorrect
+answer. The & 0xFF would completely remove the sign bits, making it impossible for the final answer to be
+negative.
+B.
+int xbyte(packed_t word, int bytenum) {
+	return (word << (24 - (bytenum << 3))) >> 24;
+}
+
+(Problem 2.82)
+A. Does not always yield 1. If x = -2147483648 and y = any number, the boolean would return 0;
+If x = -2147483648, -x = x since converting from negative to positive in 2's complement would be to flip all
+the bits and add 1 which would end up with the same value -2147483648. Since -2147483648 is the absolute minimum
+for a signed 32 bit integer, no number can be less than it in a 32 bit signed integer representation.
+(x<y) == (-x>-y) would evaluate to (Min<y) == (Min>-y) which would return 0.
+B. Always yields 1. (x+y) << 4 is the same as 16*x + 16*y. Therefore, ((x+y)<<4) + y-x = 16*x-x + 16*y+y
+= 17*y+15*x. Thus, the boolean ((x+y)<<4) + y-x == 17*y+15*x would always return 1.
+In the case of an over or underflow, both sides of the statement would truncate, making the final result of both
+sides equal.
+C. Always yields 1. The formula for 2s complement is -x = ~x + 1. Solving for ~x, we get ~x = -x - 1.
+Using this formula to substitute into the boolean, we get -x - 1 - y - 1 + 1 == -(x+y) - 1.
+Simplifying both sides, we get -x-y-1 == -x-y-1 which is true.
+D. Always yields 1. Typecasting only changes the interpretation of the bits, not the bits themselves or how
+operators behave. Multiplying an unsigned int by -1 will perform the same 2s complement conversion formula as
+multiplying a signed int by -1. Therefore, (ux-uy) == (unsigned)(-(y-x)) = (unsigned)(x-y) which will return
+true since both sides are unsigned int and the underlying bits are the same.
+E. Always yields 1. If the last two bits of x are 0, then right shifting then left shifting by 2 bits will
+do nothing to the value of x, meaning ((x >> 2) << 2) = x, making the boolean statement return true. If at
+least one of the last two bits of x are not 0, then right shifting by 2 bits will truncate the last two bits,
+overwriting their value with 0s when left shifting back 2 bits. This will decrease the value of x after the
+shifts, meaning ((x >> 2) << 2) < x, making the boolean statement return true. Therefore, the boolean statement
+will return true in all cases.
