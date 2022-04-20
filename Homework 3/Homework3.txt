@@ -1,0 +1,63 @@
+Name: Daniel Yang
+UID: 205772799
+
+(Problem 3.60)
+
+A. x is in %rdi, n is in %esi, result is in %rax, mask is in %rdx.
+B. result is initially 0, mask is initally 1.
+C. The test condition for mask is if mask is 0. if mask != 0, then for loop continues.
+D. mask gets updated by getting left shifting n.
+E. result gets updated by doing a bitwise OR with (x AND mask).
+F.
+long loop(long x, int n)
+{
+	long result = 0;
+	long mask;
+	for (mask = 1; mask != 0; mask = mask << n){
+		result |= (x & mask);
+	}
+	return result;
+}
+
+(Problem 3.63)
+
+long switch_prob(long x, long n) {
+	long result = x;
+	switch(n) {
+		case 60:
+		case 62:
+			result = 8*x;
+			break;
+		case 63:
+			result >>= 3;
+			break;
+		case 64:
+			result <<= 4;
+			result -= x;
+			x = result;
+		case 65:
+			x *= x;
+		default:
+			result = x + 75;
+	}
+	return result;
+}
+
+(Problem 3.64)
+
+A. &A[i][j][k] = xA + L(i*S*T + j*T + k)
+B.
+Notes:
+rax = 13j
+rdi = 65i + 13j
+rdx = A + 8(k + 65i + 13j)
+rax = 8*rdx	+ A
+S*T = 65;
+T = 13;
+3640=(8*RST)
+
+Answer:
+R = 7
+S = 5;
+T = 13;
+

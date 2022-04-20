@@ -14,17 +14,14 @@
  * it's not good practice to ignore compiler warnings, but in this
  * case it's OK.  
  */
-
 #if 0
 /*
  * Instructions to Students:
  *
  * STEP 1: Read the following instructions carefully.
  */
-
 You will provide your solution to the Data Lab by
 editing the collection of functions in this source file.
-
 INTEGER CODING RULES:
  
   Replace the "return" statement in each function with one
@@ -36,13 +33,11 @@ INTEGER CODING RULES:
       int var1 = Expr1;
       ...
       int varM = ExprM;
-
       varJ = ExprJ;
       ...
       varN = ExprN;
       return ExprR;
   }
-
   Each "Expr" is an expression using ONLY the following:
   1. Integer constants 0 through 255 (0xFF), inclusive. You are
       not allowed to use big constants such as 0xffffffff.
@@ -53,7 +48,6 @@ INTEGER CODING RULES:
   Some of the problems restrict the set of allowed operators even further.
   Each "Expr" may consist of multiple operators. You are not restricted to
   one operator per line.
-
   You are expressly forbidden to:
   1. Use any control constructs such as if, do, while, for, switch, etc.
   2. Define or use any macros.
@@ -63,15 +57,12 @@ INTEGER CODING RULES:
   6. Use any form of casting.
   7. Use any data type other than int.  This implies that you
      cannot use arrays, structs, or unions.
-
  
   You may assume that your machine:
   1. Uses 2s complement, 32-bit representations of integers.
   2. Performs right shifts arithmetically.
   3. Has unpredictable behavior when shifting if the shift amount
      is less than 0 or greater than 31.
-
-
 EXAMPLES OF ACCEPTABLE CODING STYLE:
   /*
    * pow2plus1 - returns 2^x + 1, where 0 <= x <= 31
@@ -80,7 +71,6 @@ EXAMPLES OF ACCEPTABLE CODING STYLE:
      /* exploit ability of shifts to compute powers of 2 */
      return (1 << x) + 1;
   }
-
   /*
    * pow2plus4 - returns 2^x + 4, where 0 <= x <= 31
    */
@@ -90,14 +80,10 @@ EXAMPLES OF ACCEPTABLE CODING STYLE:
      result += 4;
      return result;
   }
-
-
 NOTES:
   1. Our checker requires that you do NOT define a variable after 
      a statement that does not define a variable.
-
      For example, this is NOT allowed:
-
      int illegal_function_for_this_lab(int x, int y) {
       // this statement doesn't define a variable
       x = x + y + 1;
@@ -106,11 +92,11 @@ NOTES:
       // because this variable definition comes after a statement 
       // that doesn't define a variable
       int z;
-
       return 0;
      }
      
-  2. VERY IMPORTANT: Use the dlc (data lab checker) compiler (described in the handout)
+  2. VERY IMPORTANT: Use the dlc (data lab checker) compiler (described in the 
+handout)
      to check the legality of your solutions.
   3. Each function has a maximum number of operations (integer, logical,
      or comparison) that you are allowed to use for your implementation
@@ -120,7 +106,6 @@ NOTES:
   4. Use the btest to check your functions for correctness.
   5. The maximum number of ops for each function is given in the
      header comment for each function. 
-
 /*
  * STEP 2: Modify the following functions according the coding rules.
  * 
@@ -130,22 +115,17 @@ NOTES:
  *   2. Use the btest to verify that your solutions produce 
  *      the correct answers.
  */
-
-
 #endif
 /* Copyright (C) 1991-2012 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
    License as published by the Free Software Foundation; either
    version 2.1 of the License, or (at your option) any later version.
-
    The GNU C Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
-
    You should have received a copy of the GNU Lesser General Public
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
@@ -169,7 +149,8 @@ NOTES:
  *   Rating: 1
  */
 int isTmax(int x) {
-	return !~((x+1)^x)&!!(x^~0); // left will be 1 if x = max or -1, right will be 1 if positive
+/* left will be 1 if x = max or -1, right will be 1 if positive */
+return !~((x+1)^x)&!!(x^~0);
 }
 /*
  * evenBits - return word with all even-numbered bits set to 1
@@ -178,7 +159,8 @@ int isTmax(int x) {
  *   Rating: 1
  */
 int evenBits(void) {
-	return (0x55 << 24) + (0x55 << 16) + (0x55 << 8) + 0x55;
+/* takes the sum of each octet */
+return (0x55 << 24) + (0x55 << 16) + (0x55 << 8) + 0x55;
 }
 //2
 /* 
@@ -189,7 +171,8 @@ int evenBits(void) {
  *   Rating: 2
  */
 int isEqual(int x, int y) {
-	return !(x^y);
+/* xor then logical not */
+return !(x^y);
 }
 /* 
  * fitsBits - return 1 if x can be represented as an 
@@ -201,7 +184,8 @@ int isEqual(int x, int y) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-	return !((x>>(n+~0)<<(n+~0))^(x>>31<<(n+~0)));
+/* left zeroes last n - 1 bits, right makes left bits the same, xor will be 0 if all left bits are the same */
+return !((x>>(n+~0)<<(n+~0))^(x>>31<<(n+~0)));
 }
 //3
 /* 
@@ -212,7 +196,8 @@ int fitsBits(int x, int n) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-	return (((!x)<<31>>31)&z)+(((!!x)<<31>>31)&y);
+/* left will be z if x is 0, right will be y if x is not 0 */
+return (((!x)<<31>>31)&z)+(((!!x)<<31>>31)&y);
 }
 /* 
  * isGreater - if x > y  then return 1, else return 0 
@@ -222,12 +207,13 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isGreater(int x, int y) { //x max, y min
-    int xsign = (x>>31)&1; int ysign = (y>>31)&1; //sign of x and y
-    int diffsign = xsign^ysign;
-	int operand = ~(1<<31);
-	int xmag = operand&x; int ymag = operand&y;
-	int diff = xmag+~ymag+1; //x-y
-	return (diffsign&ysign)+((!diffsign)&(!(diff>>31))&((~diff+1)>>31));
+/* left is 1 if x positive y negative, if signs the same right and x-y is positive and y-x is negative return 1 */
+int xsign = (x>>31)&1; int ysign = (y>>31)&1; //sign of x and y
+int diffsign = xsign^ysign;
+int operand = ~(1<<31);
+int xmag = operand&x; int ymag = operand&y;
+int diff = xmag+~ymag+1; //x-y
+return (diffsign&ysign)+((!diffsign)&(!(diff>>31))&((~diff+1)>>31));
 }
 /*
  * multFiveEighths - multiplies by 5/8 rounding toward 0.
@@ -241,9 +227,10 @@ int isGreater(int x, int y) { //x max, y min
  *   Rating: 3
  */
 int multFiveEighths(int x) {
-	int fivex = x + x + x + x + x;
-	int bias = (fivex >> 31) & 7;
-	return (fivex + bias) >> 3;
+/* add x 5 times, add bias if negative, right shift */
+int fivex = x + x + x + x + x;
+int bias = (fivex >> 31) & 7;
+return (fivex + bias) >> 3;
 }
 //4
 /* 
@@ -255,6 +242,7 @@ int multFiveEighths(int x) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
+/* 1 if x and -x are both positive */
   return (((x>>31)|((~x+1)>>31))+1)&1;
 }
 /* 
@@ -267,9 +255,10 @@ int logicalNeg(int x) {
  *   Rating: 4
  */
 int twosComp2SignMag(int x) {
-	int xSign = x >> 31;
-	int cxSign = ~x >> 31;
-	return (xSign << 31) + ((x&~(~0<<31))&cxSign) + ((~x+1)&xSign);
+/* add sign bit, if positive add rest of the bits, if negative add |x| ignoring sign bit */
+int xSign = x >> 31;
+int cxSign = ~x >> 31;
+return (xSign << 31) + ((x&~(~0<<31))&cxSign) + ((~x+1)&xSign);
 }
 /*
  * isPower2 - returns 1 if x is a power of 2, and 0 otherwise
@@ -280,5 +269,6 @@ int twosComp2SignMag(int x) {
  *   Rating: 4
  */
 int isPower2(int x) {
+/* if power of 2 then x&x-1 = 0, x needs to be positive, x not 0 */
   return !(x&(x+~0))&!(x>>31)&!!x;
 }
