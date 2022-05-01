@@ -1,0 +1,59 @@
+0x30+rsp = array[0]
+i = ebp
+
+for (int i = 0; i < 6; i++) {
+	rax = i;
+	eax = array[i] - 1;
+	if (array[i] <= 6) {
+		ebx = r12d = i + 1;
+		j = ebx = i + 1;
+		while (j < 6) {
+			eax = array[j];
+			if (array[i] != array[j]) {
+				j++;
+			} else {
+				explode_bomb;
+			}
+		}
+	} else {
+		explode_bomb;
+	}
+} // all elements <= 6, > 0; all unique
+
+*0x401111
+esi = 0;
+i = esi = 0;
+node* list[6] = rsp; //list of nodes
+for (int i = 0; i < 6; i++) {
+	int counter = eax = 1;
+	edx = head = 0x604160;
+	node* current = edx = head;
+	rcx = i;
+	while (array[i] > counter) {
+		current = current->next;
+		eax++;
+	}
+	rax = i;
+	list[i] = current;
+} //converts array[] into list[] stored at rsp
+
+*0x40113e
+rbx = node(array[0])
+rcx = rbx
+i = eax = 1
+node* current = list[0];
+for (int i = 1; i < 6; i++) {
+	rdx = i;
+	current.next = list[i];
+	current = current.next;
+} //links nodes together in order of array[]
+
+*0x401169
+i = ebp = 0;
+node* current = rbx = list[0];
+for (int i = 0; i < 5; i++) {
+	if (current.val < current.next.val) {
+		explode_bomb;
+	}
+	current = current.next;
+} //decreasing magnitude of nodes

