@@ -1,0 +1,30 @@
+Name: Daniel Yang
+UID: 205772799
+
+(Problem 1)
+
+s7 = ra
+s3 = 0
+s4 = 1
+s5 = 0
+s6 = save
+
+Loop:
+t8 = 4*s3 + s6
+t9 = save[4*s3]
+if t9 != s5 -> exit
+s3++
+
+message1:
+v0 = 4
+a0 = message1
+print(message1)
+v0 = 1
+a0 = s3
+print(s3)
+
+The program would output:
+"The value of i is: 7"
+
+(Problem 2)
+e. jyix

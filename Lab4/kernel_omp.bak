@@ -1,0 +1,46 @@
+#include <omp.h>
+
+#include "kernel.h"
+
+void kernel_omp(int *input, int *ref, int64_t rows, int64_t cols, int penalty) {
+    const int BLOCK_SIZE = 32;
+    #pragma omp parallel
+    {
+    for (int x = 1; x + BLOCK_SIZE - 1 < rows; x += BLOCK_SIZE) {
+        for (int y = 1; y + BLOCK_SIZE - 1 < cols; y += BLOCK_SIZE) {
+            const int xbound = x + BLOCK_SIZE; //rows
+            const int ybound = y + BLOCK_SIZE; //cols
+            for (int i = x; i < xbound; i++) {
+                for (int j = y; j <= i - x + y; j++) {
+                    int ii = i - j + y;
+                    int64_t idx = ii * cols + j;
+                    int64_t idxNW = idx - cols - 1;
+                    int64_t idxN = idx - cols;
+                    int64_t idxW = idx - 1;
+                    int r = ref[idx];
+                    int inputNW = input[idxNW];
+                    int inputW = input[idxW];
+                    int inputN = input[idxN];
+
+                    input[idx] = maximum(inputNW + r, inputW - penalty, inputN - penalty);
+                }
+            }
+            for (int j = y + 1; j < ybound; j++) {
+                for (int i = xbound - 1; i >= x+j-y; i--) {
+                    int jj = (j - y + 1) + BLOCK_SIZE - 1 - (i - x + 1) + y;
+                    int64_t idx = i * cols + jj;
+                    int64_t idxNW = idx - cols - 1;
+                    int64_t idxN = idx - cols;
+                    int64_t idxW = idx - 1;
+                    int r = ref[idx];
+                    int inputNW = input[idxNW];
+                    int inputW = input[idxW];
+                    int inputN = input[idxN];
+
+                    input[idx] = maximum(inputNW + r, inputW - penalty, inputN - penalty);
+                }
+            }
+        }
+    }
+    }
+}

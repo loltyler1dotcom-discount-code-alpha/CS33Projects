@@ -1,0 +1,20 @@
+Name: Daniel Yang
+UID: 205772799
+(Problem 6.41)
+buffer = 4 bytes
+buffer[i][j] will always miss at the beginning of the loop.
+After miss 4 bytes loaded into cache line.
+Next 3 bytes will be hits.
+
+25% miss rate
+
+(Problem 6.45)
+void transpose (int *dst, int *src, int dim)
+{
+    int ii, jj, i, j;
+    for (ii = 0; ii < dim; ii += 4)
+        for (jj = 0; jj < dim; jj += 4)
+            for (i = ii; i < ii + 4; i++)
+                for (j = jj; j < jj + 4; j++)
+                    dst[j*dim + i] = src[i*dim + j];	
+}

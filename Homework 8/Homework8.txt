@@ -1,0 +1,22 @@
+Name: Daniel Yang
+UID: 205772799
+
+(Problem 1)
+Answer: C
+
+(Problem 2)
+x = ebx
+x & 3 == 3
+Answer: C
+
+(Problem 3)
+t0 = 4
+t1 = gp + 0x10
+t2 = 0
+t3 = 1
+t4 = 0
+t4 = t4 + gp + 0x10
+t2 = ccddccdd + 1
+
+Answer: $t0 = 0x4
+Answer: $t9 = 0xaabbaabb

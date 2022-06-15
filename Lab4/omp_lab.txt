@@ -1,0 +1,42 @@
+Name: Daniel Yang
+UID: 205772799
+
+I first tested adding a "#pragma omp parallel for" on the inner loop to see how fast the parallelized loop would run.
+It got the speed down from 524439 us to 225460 us.
+
+I tried to implement the diagonal movement but it drastically slowed down execution time because of the lack of memory
+locality. Execution time was 10 times slower than the parallelized loop of the original sequential execution.
+
+I then implemented tiling using a 64 byte block size. However, I somehow implemented tiling incorrectly so when I ran
+./check the answer was different from the sequential algorithm.
+
+I figured out that my parallel implementation was incorrect because the loop iterations weren't moving diagonally
+across the matrix since I used calculations for index coordinates that didn't account for the tile offset. After
+adding an offset to the index calculation that shifts the i and j relative to (0,0) then shifting them back to their
+appropriate coordinates I finally got the nested loops to work correctly.
+
+After getting the tiling to work correctly, I then copied over the inner loops needed to process each tile. I tested
+a "#pragma omp parallel for" statement in the beginning of the block so each thread would process an entire block.
+I got a time of 153954 us. I then tried to add the same statement to the inner loops however the overhead of creating a
+thread led to an insanely high time of 4520471 us.
+
+I realized that instead of processing blocks diagonally and the elements inside each block row-column order, I was
+processing blocks in row-column order inside each block going diagonally. I rewrote my code to process blocks
+diagonally.
+
+After rewriting the code, I ran it sequentially to see if the final output was correct. After fixing a few bounds and the
+value of some variables in my loops, I got it working and added the pragmas. I was only able to get the parallel version
+down to 310176 us from around 540327 us in the sequential version. After checking my code, I realized that the pragmas
+were in the wrong place and weren't processing the blocks in parallel but instead were processing each diagonal in
+parallel which was both incorrect and inefficient. After fixing this issue, I got 195475 us, down from 464457 us when
+running sequentially.
+
+Next was figuring out the optimal block size. I looked up the common sizes for cache lines and saw that 64 bytes was the
+most common. Since an int is 4 bytes, a block of size 16 would fit perfectly in the 64 bytes cache lines. However, I
+found that 64 bytes was fastest experimentally. I think that this is probably due to the fact that even though 16 int
+blocks fit within the L1 cache line size, they probably make more calls to the lower level caches since the size is so
+small so not all of the cache lines are filled. This is only a guess though.
+
+I then tried adding loop unrolling for the inner most loop and found that the beyong 4 iterations per loop, the parallism
+benefits are negated by overhead and the program actually runs slower. After adding loop unrolling to the pragma omps,
+I ended up with a final time of around 8-10k us, compared to the 42-43k us sequential program.
